@@ -1,0 +1,127 @@
+/* ===== Colours and basic settings (CSS variables make colours easy to change) ===== */
+:root {
+    --primary: #3b5bdb;
+    --primary-dark: #2f4ac0;
+    --bg: #f4f6fb;
+    --card-bg: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --good-bg: #e6f6ec;
+    --good-text: #1b7a3d;
+    --warn-bg: #fff4e0;
+    --warn-text: #a65f00;
+    --error-bg: #fdecec;
+    --error-text: #b42318;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+.container {
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* ===== Header ===== */
+.hero {
+    background: linear-gradient(135deg, var(--primary), #5f3dc4);
+    color: #fff;
+    padding: 40px 0 36px;
+    margin-bottom: 24px;
+}
+.hero h1 { margin: 0 0 8px; font-size: 2rem; }
+.tagline { margin: 0; max-width: 680px; opacity: 0.95; }
+
+/* ===== Cards ===== */
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.card h2 { margin-top: 0; font-size: 1.25rem; }
+.card h3 { margin: 18px 0 8px; font-size: 1rem; }
+.card-muted { background: #fafbff; }
+
+/* ===== Form ===== */
+label { display: block; font-weight: 600; margin: 14px 0 6px; }
+
+input[type="file"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font: inherit;
+    background: #fff;
+}
+textarea { resize: vertical; }
+input:focus, textarea:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 1px;
+}
+
+button {
+    margin-top: 18px;
+    padding: 12px 26px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+button:hover { background: var(--primary-dark); }
+button:disabled { opacity: 0.6; cursor: wait; }
+
+.hint { color: var(--muted); font-size: 0.9rem; }
+.muted { color: var(--muted); }
+code { background: #eef1f8; padding: 1px 6px; border-radius: 4px; font-size: 0.9em; }
+
+/* ===== Alerts ===== */
+.alert { padding: 12px 14px; border-radius: 8px; margin: 12px 0; }
+.alert-error { background: var(--error-bg); color: var(--error-text); border: 1px solid #f5c2be; }
+.alert-note { background: var(--warn-bg); color: #6b4200; border: 1px solid #f3d9a4; margin-top: 16px; }
+
+/* ===== Score ===== */
+.score-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.score-number { font-size: 3rem; font-weight: 700; color: var(--primary); }
+.score-text p { margin: 4px 0 0; }
+.bar { height: 12px; background: var(--border); border-radius: 999px; overflow: hidden; margin-top: 12px; }
+.bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #5f3dc4); }
+
+/* ===== Skill tags ===== */
+.tags { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.tags li { padding: 4px 12px; border-radius: 999px; font-size: 0.9rem; font-weight: 600; }
+.tags-good li { background: var(--good-bg); color: var(--good-text); }
+.tags-warn li { background: var(--warn-bg); color: var(--warn-text); }
+
+/* ===== Checklist and suggestions ===== */
+.checklist { list-style: none; padding: 0; margin: 0 0 8px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 16px; }
+.checklist .ok { color: var(--good-text); }
+.checklist .bad { color: var(--error-text); }
+.suggestions li { margin-bottom: 8px; }
+
+footer { text-align: center; color: var(--muted); padding: 20px 0 32px; font-size: 0.9rem; }
+
+/* ===== Mobile screens ===== */
+@media (max-width: 600px) {
+    .hero h1 { font-size: 1.5rem; }
+    .card { padding: 16px; }
+    .checklist { grid-template-columns: 1fr; }
+    .score-number { font-size: 2.4rem; }
+    button { width: 100%; }
+}

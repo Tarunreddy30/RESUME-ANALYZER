@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Resume Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="hero">
+    <div class="container">
+        <h1>AI-Powered Resume Analyzer</h1>
+        <p class="tagline">
+            Upload your resume (PDF) and paste a job description. The app uses a pretrained AI model
+            to measure how semantically similar they are, and simple rules to compare skills and
+            suggest improvements.
+        </p>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- ===== Upload form ===== -->
+    <section class="card">
+        <h2>1. Provide your details</h2>
+
+        {# Jinja condition: show the error box only if the server sent an error message #}
+        {% if error %}
+            <div class="alert alert-error" role="alert">{{ error }}</div>
+        {% endif %}
+
+        {# enctype="multipart/form-data" is REQUIRED for file uploads #}
+        <form method="post" action="/" enctype="multipart/form-data" id="analyze-form">
+            <label for="resume">Resume (PDF only, max 5 MB)</label>
+            <input type="file" id="resume" name="resume" accept=".pdf,application/pdf" required>
+
+            <label for="job_description">Job description</label>
+            <textarea id="job_description" name="job_description" rows="10"
+                      placeholder="Paste the job description here..." required>{{ job_description }}</textarea>
+
+            <button type="submit" id="submit-button">Analyze Resume</button>
+            <p class="hint" id="loading-text" hidden>Analyzing... the first run can take a little longer.</p>
+        </form>
+        <p class="hint">
+            Want to try it quickly? Use <code>sample_data/sample_resume.pdf</code> and paste the text from
+            <code>sample_data/sample_job_description.txt</code>.
+        </p>
+    </section>
+
+    {# ===== Results: only shown when the server sent a result ===== #}
+    {% if result %}
+    <section class="card">
+        <h2>2. Semantic similarity score</h2>
+        <div class="score-row">
+            <div class="score-number">{{ result.score_percent }}%</div>
+            <div class="score-text">
+                <strong>{{ result.score_label }}</strong>
+                <p>{{ result.score_explanation }}</p>
+            </div>
+        </div>
+        <div class="bar"><div class="bar-fill" style="width: {{ result.score_percent }}%"></div></div>
+
+        <div class="alert alert-note">
+            <strong>Please read:</strong> this is a <em>semantic similarity score</em> produced by an AI
+            model comparing the meaning of two texts. It is <strong>not</strong> an employer's ATS score
+            and it is <strong>not</strong> a probability of getting shortlisted or hired. Different companies
+            use different systems, and human recruiters make the final decision.
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>3. Skills analysis</h2>
+        {% if result.job_skills_count == 0 %}
+            <p>No skills from the built-in skill dictionary were found in the job description,
+               so a skill comparison is not possible for this text.</p>
+        {% else %}
+            <p>{{ result.matching_skills|length }} of {{ result.job_skills_count }} dictionary skills
+               in the job description were detected in your resume.</p>
+
+            <h3>Matching skills</h3>
+            {% if result.matching_skills %}
+                <ul class="tags tags-good">
+                    {% for skill in result.matching_skills %}<li>{{ skill }}</li>{% endfor %}
+                </ul>
+            {% else %}
+                <p class="muted">None detected.</p>
+            {% endif %}
+
+            <h3>Not detected in your resume</h3>
+            {% if result.missing_skills %}
+                <ul class="tags tags-warn">
+                    {% for skill in result.missing_skills %}<li>{{ skill }}</li>{% endfor %}
+                </ul>
+                <p class="hint">
+                    "Not detected" does not always mean you lack the skill. The checker looks for the skill
+                    name and common alternative names (for example, "sklearn" for scikit-learn), but it can
+                    still miss unusual wording or skills shown only inside images.
+                </p>
+            {% else %}
+                <p class="muted">Every dictionary skill from the job description was detected. 🎉</p>
+            {% endif %}
+        {% endif %}
+    </section>
+
+    <section class="card">
+        <h2>4. Resume structure check</h2>
+        <ul class="checklist">
+            {% for section_name, present in result.sections.items() %}
+                <li class="{{ 'ok' if present else 'bad' }}">
+                    {{ '✔' if present else '✘' }} {{ section_name }}
+                </li>
+            {% endfor %}
+            <li class="{{ 'ok' if result.has_email else 'bad' }}">{{ '✔' if result.has_email else '✘' }} Email address</li>
+            <li class="{{ 'ok' if result.has_phone else 'bad' }}">{{ '✔' if result.has_phone else '✘' }} Phone number</li>
+        </ul>
+        <p class="hint">Extracted text length: {{ result.resume_word_count }} words.
+            PDF text extraction may not keep every part of a complex layout (columns, tables, icons).</p>
+    </section>
+
+    <section class="card">
+        <h2>5. Improvement suggestions</h2>
+        <p class="hint">These suggestions come from simple rules, not from a generative AI model.</p>
+        <ol class="suggestions">
+            {% for suggestion in result.suggestions %}
+                <li>{{ suggestion }}</li>
+            {% endfor %}
+        </ol>
+    </section>
+    {% endif %}
+
+    <section class="card card-muted">
+        <h2>About this project</h2>
+        <ul>
+            <li><strong>AI part:</strong> the pretrained model <code>all-MiniLM-L6-v2</code> (Sentence Transformers) turns text into embeddings; cosine similarity compares them.</li>
+            <li><strong>Rule-based parts:</strong> PDF text extraction, skill detection (regular expressions + a skill dictionary), section checks and suggestions.</li>
+            <li><strong>Privacy:</strong> your PDF is processed in memory and is not saved by this app.</li>
+            <li><strong>Limitations:</strong> the skill dictionary is limited; scanned (image) PDFs are not supported; the score is only a rough guide.</li>
+        </ul>
+    </section>
+</main>
+
+<footer>
+    <p>B.Tech Project &mdash; AI-Powered Resume Analyzer</p>
+</footer>
+
+<script>
+    // Small UX touch: show a "loading" message after the button is clicked.
+    document.getElementById("analyze-form").addEventListener("submit", function () {
+        document.getElementById("submit-button").disabled = true;
+        document.getElementById("loading-text").hidden = false;
+    });
+</script>
+</body>
+</html>

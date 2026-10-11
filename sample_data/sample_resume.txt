@@ -1,0 +1,35 @@
+RAHUL SHARMA
+Email: rahul.sharma@example.com | Phone: +91 90000 00000
+GitHub: github.com/example-rahul | Hyderabad, India
+
+SUMMARY
+B.Tech Computer Science student seeking a software developer role. Interested in
+backend development and machine learning.
+
+EDUCATION
+B.Tech in Computer Science and Engineering, Example Institute of Technology, 2022 - 2026
+CGPA: 8.2 / 10
+
+SKILLS
+Programming: Python, Java, C++
+Web: HTML, CSS, JavaScript, Flask
+Database: MySQL
+Tools: Git, GitHub, VS Code
+Machine Learning: scikit-learn, pandas, NumPy
+
+PROJECTS
+Student Management System (Flask, MySQL)
+- Built a web app to add, search and update student records using Flask and MySQL.
+- Created 6 REST API endpoints returning JSON and tested them with Postman.
+- Used Git and GitHub for version control.
+
+House Price Prediction (Python, scikit-learn)
+- Cleaned a dataset of 5,000 rows with pandas and trained a regression model.
+- Compared 3 algorithms and visualised results using matplotlib.
+
+INTERNSHIP
+Python Intern, Example Tech Pvt Ltd, 2 months (Summer 2025)
+- Wrote Python scripts to automate report generation, saving about 3 hours per week.
+
+CERTIFICATIONS
+- Python for Everybody (online course)
